@@ -10,9 +10,8 @@ function tokenize(input: string): string[] {
   return input.split(/\s+/);
 }
 
-type Operator = '+' | '-';
-interface ArithmeticExpression { operator: Operator; lhs: Expression; rhs: Expression; }
-type Expression = Number | ArithmeticExpression;
+enum Operator { Addition, Subtraction }
+type Expression = Number | { operator: Operator, lhs: Expression, rhs: Expression };
 
 interface ParseResult { rest: string[]; expression: Expression; }
 
@@ -21,7 +20,7 @@ function parse(tokens: string[]): ParseResult {
   if (topToken === '+') {
     const lhs = parse(tokens.slice(1));
     const rhs = parse(lhs.rest);
-    const res = { operator: <Operator> '+', lhs: lhs.expression, rhs: rhs.expression };
+    const res = { operator: Operator.Addition, lhs: lhs.expression, rhs: rhs.expression };
     return { rest: rhs.rest, expression: res };
   }
 
